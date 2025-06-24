@@ -1,56 +1,41 @@
-const { Category  } = require('../../model/index.js');
+const asyncHandler = require('express-async-handler');
+const { Category } = require('../../model');
 
 module.exports = {
-  addCategory: async (req, res) => {
-    try {
-      const { category_name } = req.body;
-      if (!category_name) {
-        return res.status(400).json({ error: "Nama kategori diperlukan." });
-      }
+  addCategory: asyncHandler(async (req, res) => {
+    const { category_name } = req.body;
+    const category = await Category.create({ category_name });
+    res.status(201).json(category);
+  }),
 
-      const category = await Category.create({ category_name });
-      res.json(category);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
+  getCategories: asyncHandler(async (req, res) => {
+    const categories = await Category.findAll();
+    res.json(categories);
+  }),
 
-  getCategories: async (req, res) => {
-    try {
-      const categories = await Category.findAll();
-      res.json(categories);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
+  updateCategory: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { category_name } = req.body;
 
-  updateCategory: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { category_name } = req.body;
-      const [updated] = await Category.update({ category_name }, { where: { id } });
-      if (updated) {
-        const category = await Category.findByPk(id);
-        res.json(category);
-      } else {
-        res.status(404).json({ message: "Kategori tidak ditemukan." });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
+    const [updated] = await Category.update({ category_name }, { where: { id } });
 
-  deleteCategory: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const deleted = await Category.destroy({ where: { id } });
-      if (deleted) {
-        res.json({ message: "Kategori berhasil dihapus." });
-      } else {
-        res.status(404).json({ message: "Kategori tidak ditemukan." });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    if (!updated) {
+      return res.status(404).json({ message: 'Kategori tidak ditemukan.' });
     }
-  }
+
+    const category = await Category.findByPk(id);
+    res.json(category);
+  }),
+
+  deleteCategory: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const deleted = await Category.destroy({ where: { id } });
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Kategori tidak ditemukan.' });
+    }
+
+    res.json({ message: 'Kategori berhasil dihapus.' });
+  }),
 };

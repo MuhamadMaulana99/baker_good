@@ -1,12 +1,12 @@
-const schemaUser  = require('./userScema.js');
+const validate = (schema) => (req, res, next) => {
+    const { error } = schema.validate(req.body, { abortEarly: false });
+    if (error) {
+        return res.status(400).json({
+            message: 'Validasi gagal',
+            details: error.details.map(d => d.message),
+        });
+    }
+    next();
+};
 
-module.exports = {
-    addUser: (req, res, next)=>{
-    const value = schemaUser.addUser.validate(req.body);
-    if(value.error){
-        res.json(value.error.details[0].message)
-    }else{
-        next();
-    }
-    }
-}
+module.exports = validate;

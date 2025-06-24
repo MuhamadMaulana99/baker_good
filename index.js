@@ -21,7 +21,14 @@ app.use(express.urlencoded({ extended: true }))
 db.sequelize.sync({ force: false }).then(() => console.log('database ready!'))
 
 app.use(userRoute);
-app.use('*',(req, res)=> {res.status(404).json({ message: 'Not Found Error!!'})})
+app.use('*', (req, res) => { res.status(404).json({ message: 'Not Found Error!!' }) })
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.statusCode || 500).json({
+    message: err.message || 'Terjadi kesalahan server',
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
