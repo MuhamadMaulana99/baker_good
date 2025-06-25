@@ -69,6 +69,12 @@ routers.delete(
 // 🆕 Complaint Routes
 // GET semua pengaduan
 routers.get('/complaints', authMiddleware, complaintController.getComplaints);
+routers.get('/complaints/search/:code', authMiddleware, complaintController.searchComplaintByCode);
+routers.get('/complaints/filter/:status', authMiddleware, complaintController.filterComplaintByStatus);
+routers.get('/complaints/filter/:status/category/:category_id', authMiddleware, complaintController.filterComplaintByStatusAndCategory);
+routers.get('/complaints/summary/status', authMiddleware, complaintController.getComplaintStatusSummary);
+
+
 
 // POST pengaduan baru
 routers.post(

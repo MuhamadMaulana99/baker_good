@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const kategoriPengaduan = require('../../helper');
+const { kategoriPengaduan } = require('../../helper');
 
 const createCategorySchema = Joi.object({
     category_name: Joi.string()

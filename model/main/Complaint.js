@@ -4,6 +4,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
+        code_complaint: {
+            type: DataTypes.STRING,
+            unique: true
+        },
         product_id: DataTypes.INTEGER,
         category_id: DataTypes.INTEGER,
         customer_name: DataTypes.STRING,

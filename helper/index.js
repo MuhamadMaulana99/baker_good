@@ -16,4 +16,23 @@ const kategoriPengaduan = [
     "Lainnya"
 ];
 
-module.exports = kategoriPengaduan;
+const kodeKategoriMap = {
+    "Rasa": "RSA",
+    "Kemasan": "KMS",
+    "Keterlambatan": "KTL",
+    "Kualitas Roti": "KRT",
+    "Pelayanan Pegawai": "PLP",
+    "Kesalahan Pesanan": "KSP",
+    "Harga Tidak Sesuai": "HTS",
+    "Kebersihan Toko": "KBT",
+    "Promo / Diskon Bermasalah": "PRM",
+    "Stok Sering Kosong": "SSK",
+    "Waktu Pelayanan Lama": "WPL",
+    "Pengemasan Kurang Aman": "PKA",
+    "Pengiriman Bermasalah": "PGB",
+    "Perbedaan Tampilan Produk": "PTP",
+    "Lainnya": "LNS"
+};
+const allowedStatus = ['Masuk', 'Diproses', 'Selesai', 'Ditolak'];
+
+module.exports = { kategoriPengaduan, kodeKategoriMap, allowedStatus };
