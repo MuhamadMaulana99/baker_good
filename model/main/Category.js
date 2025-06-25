@@ -1,6 +1,12 @@
+const kategoriPengaduan = require("../../helper");
+
+
 module.exports = (sequelize, DataTypes) => {
   const Category = sequelize.define('Category', {
-    category_name: DataTypes.STRING,
+    category_name: {
+      type: DataTypes.ENUM(kategoriPengaduan),
+      // defaultValue: null,
+    },
   }, {
     tableName: 'categories',
     timestamps: true,

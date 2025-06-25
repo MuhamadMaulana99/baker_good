@@ -14,15 +14,27 @@ const createComplaintSchema = Joi.object({
     contact: Joi.string().required().messages({
         'any.required': 'Kontak wajib diisi.',
     }),
+    status: Joi.string()
+        .valid('Masuk', 'Diproses', 'Selesai', 'Ditolak')
+        .required(),
     description: Joi.string().optional(),
     image: Joi.string().optional(),
     date_occurrence: Joi.date().optional(),
 });
 
 const updateComplaintStatusSchema = Joi.object({
-    status: Joi.string().required(),
-    admin_response: Joi.string().allow('', null),
+    status: Joi.string()
+        .valid('Masuk', 'Diproses', 'Selesai', 'Ditolak')
+        .required(),
+    admin_response: Joi.string()
+        .required()
+        .min(1)
+        .messages({
+            'string.empty': 'Respon admin tidak boleh kosong.',
+            'any.required': 'Respon admin wajib diisi.'
+        }),
 });
+
 
 module.exports = {
     createComplaintSchema,
