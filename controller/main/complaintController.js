@@ -45,7 +45,7 @@ module.exports = {
             });
 
             // Kirim notifikasi WhatsApp via Fonnte API
-            const fonnteApiKey = "oLoXideJNx2LyDNmrfhQ"; // Ganti dengan API Key Fonnte Anda
+            const fonnteApiKey = process.env.FONNT_APIKEY; // Ganti dengan API Key Fonnte Anda
             const whatsappMessage = `
 📢 *PENGADUAN BARU DITERIMA*  
             
@@ -57,7 +57,7 @@ module.exports = {
 Segera tanggapi di sistem!  
         `;
 
-            await axios.post('https://api.fonnte.com/send', {
+            await axios.post(process.env.FONNT_API, {
                 target: contact, // Nomor dari req.body.contact (format: 081234567890)
                 message: whatsappMessage,
             }, {

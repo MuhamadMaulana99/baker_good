@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { Product, Category } = require('../../model');
+const { Op } = require('sequelize');
 
 module.exports = {
     addProduct: asyncHandler(async (req, res) => {
@@ -29,15 +30,25 @@ module.exports = {
         res.json(product);
     }),
     getProducts: asyncHandler(async (req, res) => {
+        const search = req.query.search || ""; // ambil query ?search=
+
         const products = await Product.findAll({
+            where: search
+                ? {
+                    product_name: {
+                        [Op.like]: `%${search}%`
+                    }
+                }
+                : undefined,
             include: [
                 {
                     model: Category,
                     as: 'category',
-                    attributes: ['id', 'category_name'], // pilih kolom yang diambil
+                    attributes: ['id', 'category_name'],
                 }
             ]
         });
+
         res.json(products);
     }),
 

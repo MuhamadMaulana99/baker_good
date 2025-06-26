@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { Category, Complaint } = require('../../model');
+const { fn, Op, col } = require('sequelize');
 
 module.exports = {
   addCategory: asyncHandler(async (req, res) => {
@@ -19,24 +20,34 @@ module.exports = {
 
 
   getCategories: asyncHandler(async (req, res) => {
+    const search = req.query.search || ""; // ambil query dari URL, default ""
+
     const categories = await Category.findAll({
+      where: search
+        ? {
+          category_name: {
+            [Op.like]: `%${search}%`,
+          },
+        }
+        : undefined, // jika search kosong, jangan set where
       include: [
         {
           model: Complaint,
           as: 'complaints',
-          attributes: [], // tidak ambil field complaints, hanya jumlah
+          attributes: [],
         },
       ],
       attributes: {
         include: [
-          [require('sequelize').fn('COUNT', require('sequelize').col('complaints.id')), 'total_complaints']
+          [fn('COUNT', col('complaints.id')), 'total_complaints']
         ],
       },
-      group: ['Category.id'], // penting agar COUNT tidak duplikat
+      group: ['Category.id'],
     });
 
     res.json(categories);
   }),
+
   updateCategory: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { category_name } = req.body;
