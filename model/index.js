@@ -31,6 +31,10 @@ db.Complaint.belongsTo(db.Product, { foreignKey: "product_id", as: "product" });
 db.Category.hasMany(db.Complaint, { foreignKey: "category_id", as: "complaints" });
 db.Complaint.belongsTo(db.Category, { foreignKey: "category_id", as: "category" });
 
+// Product ↔ Category
+db.Product.belongsTo(db.Category, { foreignKey: "category_id", as: "category" });
+db.Category.hasMany(db.Product, { foreignKey: "category_id", as: "products" });
+
 // Uji koneksi ke database
 (async () => {
   try {

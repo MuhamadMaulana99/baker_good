@@ -27,6 +27,7 @@ const createComplaintSchema = Joi.object({
 });
 
 const updateComplaintStatusSchema = Joi.object({
+    user_id: Joi.number().optional(),
     status: Joi.string()
         .valid('Masuk', 'Diproses', 'Selesai', 'Ditolak')
         .required(),

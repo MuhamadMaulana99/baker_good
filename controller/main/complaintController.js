@@ -102,14 +102,14 @@ Segera tanggapi di sistem!
     updateComplaintStatus: asyncHandler(async (req, res) => {
         try {
             const { id } = req.params;
-            const { status, admin_response } = req.body;
+            const { status, admin_response, user_id } = req.body;
 
             if (!status) {
                 return res.status(400).json({ message: "Status tidak boleh kosong." });
             }
 
             const [updated] = await Complaint.update(
-                { status, admin_response },
+                { status, admin_response, user_id },
                 { where: { id } }
             );
 
@@ -206,25 +206,61 @@ Segera tanggapi di sistem!
             res.status(500).json({ message: "Gagal memfilter pengaduan", details: error.message });
         }
     }),
+
     filterComplaintByStatusAndCategory: asyncHandler(async (req, res) => {
         try {
             const { status, category_id } = req.params;
+            const { keyword } = req.query;
 
-            // 🔒 Validasi input
-            if (!status || !category_id) {
-                return res.status(400).json({ message: "Status dan category_id wajib diisi." });
+            const whereClause = {};
+
+            // 🟨 Filter status jika bukan "all"
+            if (status !== "all") {
+                if (!allowedStatus.includes(status)) {
+                    return res.status(400).json({ message: "Status tidak valid." });
+                }
+                whereClause.status = status;
             }
 
-            if (!allowedStatus.includes(status)) {
-                return res.status(400).json({ message: "Status tidak valid." });
+            // 🟨 Filter kategori jika bukan "all"
+            if (category_id !== "all") {
+                whereClause.category_id = category_id;
+            }
+
+            // 🟨 Tambahkan pencarian global jika ada keyword
+            if (keyword) {
+                whereClause[Op.or] = [
+                    { code_complaint: { [Op.like]: `%${keyword}%` } },
+                    { description: { [Op.like]: `%${keyword}%` } },
+                ];
             }
 
             const complaints = await Complaint.findAll({
-                where: { status, category_id },
+                where: whereClause,
                 include: [
-                    { model: User, as: 'user', attributes: ['id_users', 'username', 'userRoles'] },
-                    { model: Product, as: 'product', attributes: ['id', 'product_name'] },
-                    { model: Category, as: 'category', attributes: ['id', 'category_name'] },
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['id_users', 'username', 'userRoles'],
+                    },
+                    {
+                        model: Product,
+                        as: 'product',
+                        attributes: ['id', 'product_name'],
+                        where: keyword
+                            ? { product_name: { [Op.like]: `%${keyword}%` } }
+                            : undefined,
+                        required: false,
+                    },
+                    {
+                        model: Category,
+                        as: 'category',
+                        attributes: ['id', 'category_name'],
+                        where: keyword
+                            ? { category_name: { [Op.like]: `%${keyword}%` } }
+                            : undefined,
+                        required: false,
+                    },
                 ],
                 order: [['createdAt', 'DESC']],
             });
