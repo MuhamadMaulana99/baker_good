@@ -3,6 +3,7 @@ const moment = require("moment");
 const asyncHandler = require('express-async-handler');
 const { Complaint, User, Product, Category, sequelize } = require('../../model');
 const { kodeKategoriMap, allowedStatus } = require('../../helper');
+const { default: axios } = require("axios");
 
 module.exports = {
     // ✅ Tambah Pengaduan
@@ -11,9 +12,10 @@ module.exports = {
             const {
                 user_id, product_id, category_id,
                 customer_name, contact, description,
-                image, date_occurrence
+                image, date_occurrence, email
             } = req.body;
 
+            // Validasi kategori
             if (!category_id) {
                 return res.status(400).json({ message: "Kategori wajib diisi." });
             }
@@ -23,26 +25,58 @@ module.exports = {
                 return res.status(404).json({ message: "Kategori tidak ditemukan." });
             }
 
+            // Generate kode pengaduan
             const prefix = kodeKategoriMap[category.category_name] || "UNK";
             const count = await Complaint.count({ where: { category_id } });
             const code_complaint = `${prefix}-${String(count + 1).padStart(5, '0')}`;
 
+            // Buat pengaduan baru
             const newComplaint = await Complaint.create({
                 code_complaint,
-                user_id,
                 product_id,
                 category_id,
                 customer_name,
                 contact,
                 description,
                 image,
+                email,
                 date_occurrence,
                 status: 'Masuk',
             });
 
-            res.status(201).json(newComplaint);
+            // Kirim notifikasi WhatsApp via Fonnte API
+            const fonnteApiKey = "oLoXideJNx2LyDNmrfhQ"; // Ganti dengan API Key Fonnte Anda
+            const whatsappMessage = `
+📢 *PENGADUAN BARU DITERIMA*  
+            
+*No. Pengaduan*: ${code_complaint}  
+*Nama Pelanggan*: ${customer_name}  
+*Kategori*: ${category.category_name}  
+*Deskripsi*: ${description}  
+            
+Segera tanggapi di sistem!  
+        `;
+
+            await axios.post('https://api.fonnte.com/send', {
+                target: contact, // Nomor dari req.body.contact (format: 081234567890)
+                message: whatsappMessage,
+            }, {
+                headers: {
+                    'Authorization': fonnteApiKey
+                }
+            });
+
+            res.status(201).json({
+                complaint: newComplaint,
+                message: "Pengaduan berhasil dibuat dan notifikasi terkirim."
+            });
+
         } catch (error) {
-            res.status(500).json({ message: "Gagal menambahkan pengaduan", details: error.message });
+            console.error("Error:", error);
+            res.status(500).json({
+                message: "Gagal menambahkan pengaduan",
+                details: error.message
+            });
         }
     }),
 
@@ -127,14 +161,21 @@ module.exports = {
             });
 
             if (!complaints.length) {
-                return res.status(404).json({ message: "Pengaduan tidak ditemukan." });
+                return res.status(200).json({
+                    message: "Pengaduan tidak ditemukan.",
+                    data: [],
+                });
             }
 
-            res.status(200).json(complaints);
+            res.status(200).json({
+                message: "Pengaduan ditemukan.",
+                data: complaints,
+            });
         } catch (error) {
             res.status(500).json({ message: "Gagal mencari pengaduan", details: error.message });
         }
     }),
+
 
 
     // ✅ Filter by status

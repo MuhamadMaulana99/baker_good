@@ -1,7 +1,8 @@
 const Joi = require('joi');
 
 const createComplaintSchema = Joi.object({
-    user_id: Joi.number().optional(), // optional karena bisa ambil dari token
+    user_id: Joi.number().allow(null).optional(),
+
     product_id: Joi.number().required().messages({
         'any.required': 'Produk harus dipilih.',
     }),
@@ -10,6 +11,9 @@ const createComplaintSchema = Joi.object({
     }),
     customer_name: Joi.string().required().messages({
         'any.required': 'Nama pelanggan wajib diisi.',
+    }),
+    email: Joi.string().required().messages({
+        'any.required': 'Email pelanggan wajib diisi.',
     }),
     contact: Joi.string().required().messages({
         'any.required': 'Kontak wajib diisi.',

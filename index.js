@@ -11,9 +11,8 @@ app.use(cors({
   origin: '*'
 }));
 
-app.use(express.json());
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 // app.use(express.urlencoded({extended: true}));
 app.use(express.urlencoded({ extended: true }))
 

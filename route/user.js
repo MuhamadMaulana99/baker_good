@@ -22,7 +22,11 @@ routers.post("/login", userController.LoginUser);
 routers.post("/register", userController.addUser);
 routers.get('/products', productController.getProducts);
 routers.post('/complaints', validate(createComplaintSchema), complaintController.addComplaint);
+routers.get('/complaints/filter/:status', complaintController.filterComplaintByStatus);
+routers.get('/complaints/today', complaintController.getTodayComplaints);
 routers.get("/categories", categoryController.getCategories);
+routers.get('/complaints/search/:code', complaintController.searchComplaintByCode);
+routers.get('/complaints/today', complaintController.getTodayComplaints);
 
 // 🔴 Dengan Auth (Protected Routes)
 routers.get("/allUser", authMiddleware, userController.getUser);
@@ -72,11 +76,8 @@ routers.delete(
 // 🆕 Complaint Routes
 // GET semua pengaduan
 routers.get('/complaints', authMiddleware, complaintController.getComplaints);
-routers.get('/complaints/search/:code', authMiddleware, complaintController.searchComplaintByCode);
-routers.get('/complaints/filter/:status', authMiddleware, complaintController.filterComplaintByStatus);
 routers.get('/complaints/filter/:status/category/:category_id', authMiddleware, complaintController.filterComplaintByStatusAndCategory);
 routers.get('/complaints/summary/status', authMiddleware, complaintController.getComplaintOverview);
-routers.get('/complaints/today', authMiddleware, complaintController.getTodayComplaints);
 routers.get('/complaints/report', authMiddleware, queryValidator(reportQuerySchema), complaintController.getComplaintReport);
 
 // PUT update status pengaduan

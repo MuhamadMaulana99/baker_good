@@ -8,12 +8,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             unique: true
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         product_id: DataTypes.INTEGER,
         category_id: DataTypes.INTEGER,
         customer_name: DataTypes.STRING,
         contact: DataTypes.STRING,
         description: DataTypes.TEXT,
-        image: DataTypes.STRING,
+        image: DataTypes.TEXT,
         date_occurrence: DataTypes.DATEONLY,
         status: {
             type: DataTypes.ENUM('Masuk', 'Diproses', 'Selesai', 'Ditolak'),
