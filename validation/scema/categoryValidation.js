@@ -2,9 +2,7 @@ const Joi = require('joi');
 const { kategoriPengaduan } = require('../../helper');
 
 const createCategorySchema = Joi.object({
-    category_id: Joi.number().required().messages({
-        'any.required': 'Category harus dipilih.',
-    }),
+
     category_name: Joi.string()
         .valid(...kategoriPengaduan)
         .required()
@@ -16,9 +14,6 @@ const createCategorySchema = Joi.object({
 });
 
 const updateCategorySchema = Joi.object({
-    category_id: Joi.number().required().messages({
-        'any.required': 'Category harus dipilih.',
-    }),
     category_name: Joi.string()
         .valid(...kategoriPengaduan)
         .required()
