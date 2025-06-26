@@ -54,7 +54,7 @@ module.exports = {
 *Kategori*: ${category.category_name}  
 *Deskripsi*: ${description}  
             
-Segera tanggapi di sistem!  
+Mohon Ditunnggu yaa, kami akan proses secepatnya :)!  
         `;
 
             await axios.post(process.env.FONNT_API, {
@@ -117,12 +117,48 @@ Segera tanggapi di sistem!
                 return res.status(404).json({ message: 'Data pengaduan tidak ditemukan.' });
             }
 
-            const updatedData = await Complaint.findByPk(id);
-            res.status(200).json(updatedData);
+            // Ambil data pengaduan lengkap setelah update
+            const complaintData = await Complaint.findByPk(id, {
+                include: [
+                    { model: Category, as: 'category', attributes: ['category_name'] } // pastikan relasi ada
+                ]
+            });
+
+            if (!complaintData) {
+                return res.status(404).json({ message: 'Data pengaduan tidak ditemukan setelah update.' });
+            }
+
+            // Ambil data yang dibutuhkan untuk notifikasi
+            const { code_complaint, customer_name, description, contact, category } = complaintData;
+
+            const whatsappMessage = `
+📢 *STATUS PENGADUAN ANDA TELAH DIPERBARUI*  
+
+*No. Pengaduan*: ${code_complaint}  
+*Nama*: ${customer_name}  
+*Status Baru*: ${status}  
+*Respon Admin*: ${admin_response || '-'}  
+
+Silakan cek pengaduan Anda di sistem kami. Terima kasih.
+        `;
+
+            const fonnteApiKey = process.env.FONNT_APIKEY;
+
+            await axios.post(process.env.FONNT_API, {
+                target: contact, // pastikan format 08xxxxxxxxxx (tanpa +62)
+                message: whatsappMessage,
+            }, {
+                headers: {
+                    'Authorization': fonnteApiKey
+                }
+            });
+
+            res.status(200).json(complaintData);
         } catch (error) {
             res.status(500).json({ message: "Gagal memperbarui status pengaduan", details: error.message });
         }
     }),
+
 
     // ✅ Hapus Pengaduan
     deleteComplaint: asyncHandler(async (req, res) => {
