@@ -1,37 +1,33 @@
 const kategoriPengaduan = [
-    "Rasa",
-    "Kemasan",
-    "Keterlambatan",
-    "Kualitas Roti",
-    "Pelayanan Pegawai",
-    "Kesalahan Pesanan",
-    "Harga Tidak Sesuai",
-    "Kebersihan Toko",
-    "Promo / Diskon Bermasalah",
-    "Stok Sering Kosong",
-    "Waktu Pelayanan Lama",
-    "Pengemasan Kurang Aman",
-    "Pengiriman Bermasalah",
-    "Perbedaan Tampilan Produk",
-    "Lainnya"
+    "Selai",
+    "Mini Size (Cinnamon)",
+    "Regular Size (Cinnamon)",
+    "Non Cinnamon Sweet",
+    "Non Cinnamon Savoury",
+    "Paket Mix 2 Varian",
+    "Paket Mix 4 Varian",
+    "Paket Hampers",
+    "Roti Isi",
+    "Extra Topping",
+    "Minuman",
+    "Additional",
+    "Produk"
 ];
 
 const kodeKategoriMap = {
-    "Rasa": "RSA",
-    "Kemasan": "KMS",
-    "Keterlambatan": "KTL",
-    "Kualitas Roti": "KRT",
-    "Pelayanan Pegawai": "PLP",
-    "Kesalahan Pesanan": "KSP",
-    "Harga Tidak Sesuai": "HTS",
-    "Kebersihan Toko": "KBT",
-    "Promo / Diskon Bermasalah": "PRM",
-    "Stok Sering Kosong": "SSK",
-    "Waktu Pelayanan Lama": "WPL",
-    "Pengemasan Kurang Aman": "PKA",
-    "Pengiriman Bermasalah": "PGB",
-    "Perbedaan Tampilan Produk": "PTP",
-    "Lainnya": "LNS"
+    "Selai": "SLI",
+    "Mini Size (Cinnamon)": "MSC",
+    "Regular Size (Cinnamon)": "RSC",
+    "Non Cinnamon Sweet": "NCS",
+    "Non Cinnamon Savoury": "NCV",
+    "Paket Mix 2 Varian": "PM2",
+    "Paket Mix 4 Varian": "PM4",
+    "Paket Hampers": "PHM",
+    "Roti Isi": "RTI",
+    "Extra Topping": "ETP",
+    "Minuman": "MNM",
+    "Additional": "ADD",
+    "Produk": "PRD"
 };
 const allowedStatus = ['Masuk', 'Diproses', 'Selesai', 'Ditolak'];
 

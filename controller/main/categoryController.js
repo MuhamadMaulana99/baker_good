@@ -4,9 +4,19 @@ const { Category, Complaint } = require('../../model');
 module.exports = {
   addCategory: asyncHandler(async (req, res) => {
     const { category_name } = req.body;
+
+    // Cek apakah kategori sudah ada
+    const existingCategory = await Category.findOne({ where: { category_name } });
+
+    if (existingCategory) {
+      return res.status(400).json({ message: 'Kategori sudah ada.' });
+    }
+
+    // Jika belum ada, buat kategori baru
     const category = await Category.create({ category_name });
     res.status(201).json(category);
   }),
+
 
   getCategories: asyncHandler(async (req, res) => {
     const categories = await Category.findAll({
