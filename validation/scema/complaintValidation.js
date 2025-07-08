@@ -22,7 +22,15 @@ const createComplaintSchema = Joi.object({
         .valid('Masuk', 'Diproses', 'Selesai', 'Ditolak')
         .required(),
     description: Joi.string().optional(),
-    image: Joi.string().allow(null).optional(), 
+    image: Joi.string()
+        .allow(null)
+        .optional()
+        .custom((value, helper) => {
+            if (value === "") {
+                return null; 
+            }
+            return value; 
+        }),
     date_occurrence: Joi.date().optional(),
 });
 
