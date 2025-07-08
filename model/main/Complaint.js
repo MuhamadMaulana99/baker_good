@@ -17,7 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         customer_name: DataTypes.STRING,
         contact: DataTypes.STRING,
         description: DataTypes.TEXT,
-        image: DataTypes.TEXT,
+        image: {
+            type: DataTypes.TEXT,  // Ini sudah cukup untuk menampung LONGTEXT
+            allowNull: true
+        },
         date_occurrence: DataTypes.DATEONLY,
         status: {
             type: DataTypes.ENUM('Masuk', 'Diproses', 'Selesai', 'Ditolak'),
