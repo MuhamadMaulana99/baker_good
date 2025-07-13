@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         contact: DataTypes.STRING,
         description: DataTypes.TEXT,
         image: {
-            type: DataTypes.TEXT,  // Ini sudah cukup untuk menampung LONGTEXT
+            type: DataTypes.TEXT('long'),
             allowNull: true
         },
         date_occurrence: DataTypes.DATEONLY,
