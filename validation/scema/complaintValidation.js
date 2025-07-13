@@ -23,13 +23,13 @@ const createComplaintSchema = Joi.object({
         .required(),
     description: Joi.string().optional(),
     image: Joi.string()
-        .allow(null)
+        .allow(null, '')  // Mengizinkan null atau string kosong
         .optional()
         .custom((value, helper) => {
             if (value === "") {
-                return null; 
+                return null;  // Mengubah string kosong menjadi null
             }
-            return value; 
+            return value;  // Mengembalikan nilai lainnya
         }),
     date_occurrence: Joi.date().optional(),
 });
