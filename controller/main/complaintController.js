@@ -24,15 +24,7 @@ module.exports = {
             if (!category) {
                 return res.status(404).json({ message: "Kategori tidak ditemukan." });
             }
-
-            // Generate kode pengaduan
-            const prefix = kodeKategoriMap[category.category_name] || "UNK";
-            const count = await Complaint.count({ where: { category_id } });
-            const code_complaint = `${prefix}-${String(count + 1).padStart(5, '0')}`;
-
-            // Buat pengaduan baru
             const newComplaint = await Complaint.create({
-                code_complaint,
                 product_id,
                 category_id,
                 customer_name,
@@ -42,6 +34,18 @@ module.exports = {
                 email,
                 date_occurrence,
                 status: 'Masuk',
+            });
+
+            // Generate kode pengaduan
+            const prefix = kodeKategoriMap[category.category_name] || "UNK";
+            const count = await Complaint.count({ where: { category_id } });
+            console.log(count, 'count')
+            const code_complaint = `${prefix}-${String(newComplaint.id).padStart(5, '0')}`;
+
+            // Buat pengaduan baru
+
+            await newComplaint.update({
+                code_complaint
             });
 
             // Kirim notifikasi WhatsApp via Fonnte API
