@@ -3,20 +3,20 @@ const fs = require("fs");
 const path = require("path");
 
 // Inisialisasi koneksi Sequelize
-const sequelize = new Sequelize("db_goodBakeds", "root", "", {
-  host: "localhost",
-  dialect: "mysql",
-});
-// const sequelize = new Sequelize(process.env.DATABASE_URL, {
+// const sequelize = new Sequelize("db_goodBakeds", "root", "", {
+//   host: "localhost",
 //   dialect: "mysql",
-//   dialectOptions: {
-//     // Menambahkan konfigurasi SSL jika dibutuhkan oleh Railway
-//     ssl: {
-//       require: true,
-//       rejectUnauthorized: false, // Memastikan koneksi tetap aman
-//     },
-//   },
 // });
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "mysql",
+  dialectOptions: {
+    // Menambahkan konfigurasi SSL jika dibutuhkan oleh Railway
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // Memastikan koneksi tetap aman
+    },
+  },
+});
 
 const db = {};
 db.Sequelize = Sequelize;
